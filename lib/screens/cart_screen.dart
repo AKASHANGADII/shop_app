@@ -37,7 +37,7 @@ class CartScreen extends StatelessWidget {
               itemCount: cardList.length,
               itemBuilder: (ctx,i)=>ChangeNotifierProvider.value(
                   value:cardList[i],
-                  child: CartItemCard(),
+                  child: CartItemCard(id: cardList.values.toList()[i].id,title: cardList.values.toList()[i].title,quantity: cardList.values.toList()[i].quantity,price: cardList.values.toList()[i].price,),
             ),
           ),),
         ],

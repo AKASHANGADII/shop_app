@@ -24,7 +24,6 @@ class Cart with ChangeNotifier{
     _items.forEach((key, value) {total+=value.price*value.quantity;});
     return total;
   }
-
   void incrementQuantity(String id,String title,int quantity,double price){
     _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity+1, price: value.price));
     notifyListeners();
