@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/orders_provider.dart';
 import 'package:shop_app/widgets/cart_item.dart';
 import '../providers/cart_provider.dart';
 
@@ -11,6 +12,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final card=Provider.of<Cart>(context);
     final cardList=card.items;
+    final orders=Provider.of<Orders>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Cart"),
@@ -27,7 +29,10 @@ class CartScreen extends StatelessWidget {
                   Text("TOTAL",style: TextStyle(fontSize: 16),),
                   Spacer(),
                   Chip(label: Text("\$ ${card.totalAmount}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
-                  FlatButton(onPressed: (){}, child: Text("ORDER NOW",style: TextStyle(color: Colors.green),))
+                  FlatButton(onPressed: (){
+                    orders.addOrder(card.items.values.toList(), card.totalAmount);
+                    card.clearCart();
+                  }, child: Text("ORDER NOW",style: TextStyle(color: Colors.green),))
                 ],
               ),
             ),
@@ -37,7 +42,7 @@ class CartScreen extends StatelessWidget {
               itemCount: cardList.length,
               itemBuilder: (ctx,i)=>ChangeNotifierProvider.value(
                   value:cardList[i],
-                  child: CartItemCard(id: cardList.values.toList()[i].id,title: cardList.values.toList()[i].title,quantity: cardList.values.toList()[i].quantity,price: cardList.values.toList()[i].price,),
+                  child: CartItemCard(productId:cardList.keys.toList()[i],id: cardList.values.toList()[i].id,title: cardList.values.toList()[i].title,quantity: cardList.values.toList()[i].quantity,price: cardList.values.toList()[i].price,),
             ),
           ),),
         ],

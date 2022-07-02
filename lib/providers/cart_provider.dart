@@ -28,12 +28,23 @@ class Cart with ChangeNotifier{
     _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity+1, price: value.price));
     notifyListeners();
 }
+void dissmissCartItem(String id){
+    _items.remove(id);
+    notifyListeners();
+}
+
   void decrementQuantity(String id,String title,int quantity,double price){
     if(quantity>1){
     _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity-1, price: value.price));
     notifyListeners();
     }
   }
+
+  void clearCart(){
+    _items={};
+    notifyListeners();
+  }
+
   void addItem(String id,String title,double price){
     if(_items.containsKey(id)){
       _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity+1, price: value.price));

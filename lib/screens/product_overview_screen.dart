@@ -4,6 +4,7 @@ import 'package:shop_app/screens/cart_screen.dart';
 
 import '../providers/cart_provider.dart';
 import '../providers/product.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/badge.dart';
 import '../widgets/product_item.dart';
 import '../widgets/products_grid.dart';
@@ -14,6 +15,7 @@ enum productScreen {
 }
 
 class ProductOverViewScreen extends StatefulWidget {
+  static const routeName='/products-screen';
   @override
   State<ProductOverViewScreen> createState() => _ProductOverViewScreenState();
 }
@@ -60,6 +62,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                   ]),
         ],
       ),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ProductsGrid(showFavs),
