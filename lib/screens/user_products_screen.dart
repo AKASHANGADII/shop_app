@@ -16,7 +16,7 @@ class UserProductsScreen extends StatelessWidget {
       appBar: AppBar(title: Text("Your products"),
         actions: [
           IconButton(onPressed: (){
-            Navigator.of(context).pushNamed(EditProductScreen.routeName);
+            Navigator.of(context).pushNamed(EditProductScreen.routeName,arguments: "aaa");
           }, icon: Icon(Icons.add),),
         ],
       ),

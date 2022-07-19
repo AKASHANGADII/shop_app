@@ -28,8 +28,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void didChangeDependencies() {
     final productId=ModalRoute.of(context)!.settings.arguments as String;
-    final product =Provider.of<Products>(context,listen: false).findById(productId);
-    if(productId!=null) {
+
+    if(productId!="aaa") {
+      final product =Provider.of<Products>(context,listen: false).findById(productId);
       _inItvalues = {
         'title': product.title,
         'discription': product.description,
