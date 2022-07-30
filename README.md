@@ -6,9 +6,9 @@ A new Flutter project.
 
 This project is a shopping application.
 Includes following features :
-Add new product
-Cart screen
-Order's screen
-Delete product
+Add new product,
+Cart screen,
+Orders screen,
+Delete product,
 Favorite option 
 
