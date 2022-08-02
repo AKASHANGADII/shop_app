@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/providers/products_provider.dart';
-import 'package:http/http.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName='/edit-product-screen';
@@ -19,7 +18,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _editProduct=Product(id: "", title: "", description: "", price: 0, imageUrl: "");
   final _form=GlobalKey<FormState>();
   bool errorCheck=false;
-
+  var _isLoading=false;
 
   var _inItvalues={
     'title':'',
@@ -62,14 +61,32 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState!.save();
+    setState((){
+      _isLoading=true;
+    });
     if(_editProduct.id=="aa"){
-      Provider.of<Products>(context,listen: false).addItem(_editProduct);
+      Provider.of<Products>(context,listen: false).addItem(_editProduct).catchError((error){
+        return showDialog<Null>(
+          context: context,
+          builder: (_)=>AlertDialog(title: Text("An error occured"),content: Text("Something went wrong!"),actions: [
+            TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Okay"))
+          ],)
+        );
+      }).then((_){
+        setState((){
+          _isLoading=false;
+        });
+        Navigator.pop(context);
+      });
     }
     else{
       Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
-
+      setState((){
+        _isLoading=false;
+      });
+      Navigator.pop(context);
     }
-    Navigator.pop(context);
+
   }
   @override
   void dispose() {
@@ -88,7 +105,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           saveForm();
         }, icon: Icon(Icons.save))
       ],),
-      body: Padding(
+      body: _isLoading?Center(child: CircularProgressIndicator(color: Colors.red,backgroundColor: Colors.black12,)):Padding(
         padding: const EdgeInsets.all(12.0),
         child: Form(
           key: _form,

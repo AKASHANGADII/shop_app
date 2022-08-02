@@ -49,9 +49,9 @@ class Products with ChangeNotifier{
   Product findById(String id){
     return _items.firstWhere((element) => element.id==id);
   }
-  void addItem(Product product){
-    final url=Uri.parse("https://shop-app-e09a0-default-rtdb.firebaseio.com/products.json");
-    http.post(url,body: json.encode({
+  Future<void> addItem(Product product){
+    final url=Uri.parse("https://shop-app-e09a0-default-rtdb.firebaseio.com/products");
+    return http.post(url,body: json.encode({
       'title':product.title,
       'discription':product.description,
       'price':product.price,
@@ -60,8 +60,9 @@ class Products with ChangeNotifier{
       final newProduct=Product(title: product.title,description: product.description,price: product.price,imageUrl: product.imageUrl,isFavorite: false,id: json.decode(value.body)['name']);
       _items.add(newProduct);
       notifyListeners();
+    }).catchError((error){
+      throw error;
     });
-
   }
 
   void updateProduct(String id,Product newProduct){
