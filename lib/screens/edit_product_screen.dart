@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/providers/products_provider.dart';
+import 'package:http/http.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName='/edit-product-screen';
@@ -18,12 +19,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _editProduct=Product(id: "", title: "", description: "", price: 0, imageUrl: "");
   final _form=GlobalKey<FormState>();
   bool errorCheck=false;
+
+
   var _inItvalues={
     'title':'',
     'discription':'',
     'imageUrl':'',
     'price':'',
-    'id':'',
+    'id':'aa',
   };
   @override
   void didChangeDependencies() {
@@ -55,15 +58,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
   void saveForm(){
     errorCheck=_form.currentState!.validate();
-    if(errorCheck){
+    if(!errorCheck){
       return;
     }
     _form.currentState!.save();
-    if(_editProduct.id!=null){
-      Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
+    if(_editProduct.id=="aa"){
+      Provider.of<Products>(context,listen: false).addItem(_editProduct);
     }
     else{
-      Provider.of<Products>(context,listen: false).addItem(_editProduct);
+      Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
+
     }
     Navigator.pop(context);
   }
@@ -77,6 +81,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text("Edit product"),actions: [
         IconButton(onPressed: (){
@@ -106,7 +111,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     }
                   },
                   onSaved: (value){
-                    _editProduct=Product(id:_editProduct.id,isFavorite: _editProduct.isFavorite, title: value.toString(), description: _editProduct.description, price: _editProduct.price, imageUrl: _editProduct.imageUrl);
+                    _editProduct=Product(id:_inItvalues['id'].toString(),isFavorite: _editProduct.isFavorite, title: value.toString(), description: _editProduct.description, price: _editProduct.price, imageUrl: _editProduct.imageUrl);
                   },
                 ),
                 TextFormField(
@@ -127,7 +132,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     }
                   },
                   onSaved: (value){
-                    _editProduct=Product(id:_editProduct.id,isFavorite: _editProduct.isFavorite,title: _editProduct.title,description: _editProduct.description,price: double.parse(value.toString()),imageUrl: _editProduct.imageUrl);
+                    _editProduct=Product(id:_inItvalues['id'].toString(),isFavorite: _editProduct.isFavorite,title: _editProduct.title,description: _editProduct.description,price: double.parse(value.toString()),imageUrl: _editProduct.imageUrl);
                   },
                 ),
                 TextFormField(
@@ -137,7 +142,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   keyboardType: TextInputType.multiline,
                   focusNode: _discriptionFocusNode,
                   onSaved: (value){
-                    _editProduct=Product(id:_editProduct.id,isFavorite: _editProduct.isFavorite,title: _editProduct.title,description:value.toString(),price: _editProduct.price,imageUrl: _editProduct.imageUrl);
+                    _editProduct=Product(id:_inItvalues['id'].toString(),isFavorite: _editProduct.isFavorite,title: _editProduct.title,description:value.toString(),price: _editProduct.price,imageUrl: _editProduct.imageUrl);
                   },
                   validator: (value){
                     if(value!.isEmpty){
@@ -166,7 +171,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       keyboardType: TextInputType.url,
                       controller: _imageUrlController,
                       onSaved: (value){
-                        _editProduct=Product(id:_editProduct.id,isFavorite: _editProduct.isFavorite,title: _editProduct.title,description: _editProduct.description,price: _editProduct.price,imageUrl: value.toString());
+                        _editProduct=Product(id:_inItvalues['id'].toString(),isFavorite: _editProduct.isFavorite,title: _editProduct.title,description: _editProduct.description,price: _editProduct.price,imageUrl: value.toString());
                       },
                       validator: (value){
                         if(value!.isEmpty){
