@@ -67,7 +67,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading=true;
     });
     if(_editProduct.id=="aa"){
-
       try{
         await Provider.of<Products>(context,listen: false).addItem(_editProduct);
       }
@@ -78,22 +77,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
               TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Okay"))
             ],)
         );
-      }finally{
-        setState((){
-          _isLoading=false;
-        });
-        Navigator.pop(context);
       }
-
     }
     else{
-      Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
-      setState((){
-        _isLoading=false;
-      });
-      Navigator.pop(context);
+      await Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
     }
-
+    setState((){
+      _isLoading=false;
+    });
+    Navigator.pop(context);
   }
   @override
   void dispose() {
