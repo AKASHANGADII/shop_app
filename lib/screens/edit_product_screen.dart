@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
@@ -55,7 +57,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       setState((){});
     }
   }
-  void saveForm(){
+  Future<void> saveForm() async {
     errorCheck=_form.currentState!.validate();
     if(!errorCheck){
       return;
@@ -65,19 +67,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading=true;
     });
     if(_editProduct.id=="aa"){
-      Provider.of<Products>(context,listen: false).addItem(_editProduct).catchError((error){
-        return showDialog<Null>(
-          context: context,
-          builder: (_)=>AlertDialog(title: Text("An error occured"),content: Text("Something went wrong!"),actions: [
-            TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Okay"))
-          ],)
+
+      try{
+        await Provider.of<Products>(context,listen: false).addItem(_editProduct);
+      }
+      catch(error){
+        await showDialog<Null>(
+            context: context,
+            builder: (_)=>AlertDialog(title: Text("An error occured"),content: Text("Something went wrong!"),actions: [
+              TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Okay"))
+            ],)
         );
-      }).then((_){
+      }finally{
         setState((){
           _isLoading=false;
         });
         Navigator.pop(context);
-      });
+      }
+
     }
     else{
       Provider.of<Products>(context,listen: false).updateProduct(_editProduct.id, _editProduct);
