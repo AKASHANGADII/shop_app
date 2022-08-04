@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 
 import '../providers/cart_provider.dart';
-import '../providers/product.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/badge.dart';
-import '../widgets/product_item.dart';
 import '../widgets/products_grid.dart';
 
 enum productScreen {
@@ -22,9 +21,23 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   bool showFavs = false;
+  bool _isInit=true;
+  bool _isLoading=false;
+  @override
+  void didChangeDependencies(){
+    // TODO: implement didChangeDependencies
+
+    if(_isInit){
+      setState((){
+        _isLoading=true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((value) => setState((){_isLoading=false;}));
+    }
+    _isInit=false;
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Products"),
@@ -63,7 +76,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: Padding(
+      body: _isLoading?Center(child: CircularProgressIndicator(color: Colors.red,backgroundColor: Colors.black12,)):Padding(
         padding: const EdgeInsets.all(8.0),
         child: ProductsGrid(showFavs),
       ),
