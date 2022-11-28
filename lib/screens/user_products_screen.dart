@@ -5,12 +5,22 @@ import 'package:shop_app/screens/edit_product_screen.dart';
 import 'package:shop_app/widgets/app_drawer.dart';
 import 'package:shop_app/widgets/user_product_item.dart';
 
-class UserProductsScreen extends StatelessWidget {
+class UserProductsScreen extends StatefulWidget {
   static const routeName='/user-products-screen';
-  Future<void> _onReferesh(BuildContext ctx) async {
-    await Provider.of<Products>(ctx,listen: false).fetchAndSetProducts();
+
+  @override
+  State<UserProductsScreen> createState() => _UserProductsScreenState();
 }
 
+class _UserProductsScreenState extends State<UserProductsScreen> {
+  Future<void> _onReferesh(BuildContext ctx) async {
+    await Provider.of<Products>(ctx,listen: false).fetchAndSetProducts();
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _onReferesh(context);
+  }
   @override
   Widget build(BuildContext context) {
     final productData=Provider.of<Products>(context);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/screens/edit_product_screen.dart';
+
+import '../providers/products_provider.dart';
 
 class UserProductItem extends StatelessWidget {
   String id;
@@ -19,7 +22,9 @@ class UserProductItem extends StatelessWidget {
             IconButton(onPressed: (){
               Navigator.pushNamed(context, EditProductScreen.routeName,arguments: id);
             }, icon: Icon(Icons.edit),),
-            IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: Colors.red,),),
+            IconButton(onPressed: (){
+              Provider.of<Products>(context,listen: false).deleteProduct(id);
+            }, icon: Icon(Icons.delete,color: Colors.red,),),
           ],
         ),
       ),

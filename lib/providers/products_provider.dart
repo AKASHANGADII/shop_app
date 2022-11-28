@@ -83,7 +83,7 @@ class Products with ChangeNotifier{
     }
     catch(error){
       throw error;
-        }
+    }
   }
   Future<void> updateProduct(String id,Product newProduct) async{
     var n=_items.indexWhere((element) => element.id==id);
@@ -100,6 +100,19 @@ class Products with ChangeNotifier{
     }
     else{
       return;
+    }
+  }
+  Future<void> deleteProduct(String id) async {
+    var existingIndex=_items.indexWhere((element) => element.id==id);
+    try{
+      final url=Uri.parse("https://shop-app-e09a0-default-rtdb.firebaseio.com/products/$id.json");
+      await http.delete(url).then((value) => _items.removeAt(existingIndex)).catchError((error){
+        print("error while deleting");
+      });
+      notifyListeners();
+    }
+    catch(error){
+      print(error.toString());
     }
   }
 }

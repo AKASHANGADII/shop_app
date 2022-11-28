@@ -29,7 +29,7 @@ class CartScreen extends StatelessWidget {
                   Text("TOTAL",style: TextStyle(fontSize: 16),),
                   Spacer(),
                   Chip(label: Text("\$ ${card.totalAmount}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
-                  FlatButton(onPressed: (){
+                  GestureDetector(onTap: (){
                     orders.addOrder(card.items.values.toList(), card.totalAmount);
                     card.clearCart();
                   }, child: Text("ORDER NOW",style: TextStyle(color: Colors.green),))

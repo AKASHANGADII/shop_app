@@ -31,14 +31,14 @@ class CartItemCard extends StatelessWidget {
             title: Text("Are your sure?"),
             content: Text("Do you want remove the item from the cart"),
             actions: [
-              FlatButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   Navigator.of(ctx).pop(false);
                 },
                 child: Text("NO"),
               ),
-              FlatButton(
-                  onPressed: () {
+              GestureDetector(
+                  onTap: () {
                     Navigator.pop(ctx, true);
                   },
                   child: Text("Yes"))
