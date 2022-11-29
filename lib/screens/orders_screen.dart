@@ -15,15 +15,22 @@ class OrdersScreen extends StatefulWidget {
 
 class _OrdersScreenState extends State<OrdersScreen> {
   bool isinit=true;
+  bool isLoading=false;
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async{
     super.didChangeDependencies();
+
     if(isinit){
-      Provider.of<ci.Orders>(context).fetchAndSetOrders();
       setState(() {
-        isinit=false;
+        isLoading=true;
+      });
+      await Provider.of<ci.Orders>(context).fetchAndSetOrders().then((value) {
+        setState(() {
+          isLoading=false;
+        });
       });
     }
+    isinit=false;
   }
   @override
   void initState() {
@@ -35,7 +42,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       appBar: AppBar(title: Text("Your Orders"),),
       drawer: AppDrawer(),
-      body: ListView.builder(
+      body: isLoading?Center(child: CircularProgressIndicator()):ListView.builder(
           itemCount: ordersList.length,
           itemBuilder: (ctx,i)=>OrderItem(order: ordersList[i],),),
     );
