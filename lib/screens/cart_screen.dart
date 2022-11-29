@@ -28,11 +28,9 @@ class CartScreen extends StatelessWidget {
                 children: [
                   Text("TOTAL",style: TextStyle(fontSize: 16),),
                   Spacer(),
-                  Chip(label: Text("\$ ${card.totalAmount}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
-                  GestureDetector(onTap: (){
-                    orders.addOrder(card.items.values.toList(), card.totalAmount);
-                    card.clearCart();
-                  }, child: Text("ORDER NOW",style: TextStyle(color: Colors.green),))
+                  Chip(
+                    label: Text("\$ ${card.totalAmount}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
+                  OrderButton(orders: orders, card: card)
                 ],
               ),
             ),
@@ -48,5 +46,38 @@ class CartScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  OrderButton({
+    Key? key,
+    required this.orders,
+    required this.card,
+  }) : super(key: key);
+
+  final Orders orders;
+  final Cart card;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool isLoading=false;
+  @override
+  Widget build(BuildContext context) {
+
+    return GestureDetector(
+        onTap: (widget.card.totalAmount<=0 || isLoading)?null:() async {
+          setState(() {
+            isLoading=true;
+          });
+       await widget.orders.addOrder(widget.card.items.values.toList(), widget.card.totalAmount);
+          setState(() {
+            isLoading=false;
+          });
+      widget.card.clearCart();
+    }, child: isLoading?CircularProgressIndicator():Text("ORDER NOW",style: TextStyle(color: Colors.green),));
   }
 }
