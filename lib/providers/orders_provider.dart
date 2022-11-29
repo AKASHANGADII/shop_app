@@ -29,9 +29,12 @@ class Orders with ChangeNotifier {
         "https://shop-app-e09a0-default-rtdb.firebaseio.com/orders.json");
     try {
       final response = await http.get(url);
-      final loadedData = await jsonDecode(response.body) as Map<String, dynamic>;
+      final extractedData = await jsonDecode(response.body) as Map<String, dynamic>;
       List<OrderItem> loadedOrders = [];
-      loadedData.forEach(
+      if(extractedData== null){
+        return;
+      }
+      extractedData.forEach(
         (key, value) {
           loadedOrders.add(
             OrderItem(
