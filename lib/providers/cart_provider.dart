@@ -25,7 +25,7 @@ class Cart with ChangeNotifier{
     return total;
   }
   void incrementQuantity(String id,String title,int quantity,double price){
-    _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity+1, price: value.price));
+    _items.update(id, (value) => CartItem(id:id, title: value.title, quantity: value.quantity+1, price: value.price));
     notifyListeners();
 }
   void dissmissCartItem(String id){
@@ -61,7 +61,7 @@ class Cart with ChangeNotifier{
       _items.update(id, (value) => CartItem(id: value.id, title: value.title, quantity: value.quantity+1, price: value.price));
     }
     else{
-      _items.putIfAbsent(id, () => CartItem(id: DateTime.now().toString(), title: title, quantity: 1, price: price));
+      _items.putIfAbsent(id, () => CartItem(id: id, title: title, quantity: 1, price: price));
     }
     notifyListeners();
   }

@@ -29,7 +29,7 @@ class CartScreen extends StatelessWidget {
                   Text("TOTAL",style: TextStyle(fontSize: 16),),
                   Spacer(),
                   Chip(
-                    label: Text("\$ ${card.totalAmount}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
+                    label: Text("\$ ${double.parse(card.totalAmount.toStringAsFixed(3))}",style: TextStyle(color: Colors.white),),backgroundColor: Colors.purple,),
                   OrderButton(orders: orders, card: card)
                 ],
               ),

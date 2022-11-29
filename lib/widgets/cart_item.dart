@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart_provider.dart';
 
-class CartItemCard extends StatelessWidget {
+class CartItemCard extends StatefulWidget {
   String id;
   String productId;
   String title;
@@ -15,14 +15,20 @@ class CartItemCard extends StatelessWidget {
       required this.title,
       required this.quantity,
       required this.price});
+
+  @override
+  State<CartItemCard> createState() => _CartItemCardState();
+}
+
+class _CartItemCardState extends State<CartItemCard> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
     return Dismissible(
-      key: ValueKey(id),
+      key: ValueKey(widget.id),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        cart.dissmissCartItem(productId);
+        cart.dissmissCartItem(widget.productId);
       },
       confirmDismiss: (direction) {
         return showDialog(
@@ -63,96 +69,100 @@ class CartItemCard extends StatelessWidget {
         margin: EdgeInsets.all(12),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
-            height: 105,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
+                Column(
                   children: [
-                    Column(
+                    Text(
+                      widget.title,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          title,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    cart.incrementQuantity(
-                                        id, title, quantity, price);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        bottomLeft: Radius.circular(5),
-                                      ),
-                                      color: Colors.orange,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.orange)
+                          ),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  cart.decrementQuantity(
+                                      widget.id, widget.title, widget.quantity, widget.price);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      bottomLeft: Radius.circular(5),
                                     ),
-                                    child: Icon(Icons.remove),
+                                    color: Colors.orange,
                                   ),
+                                  child: Icon(Icons.remove),
                                 ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(quantity.toString()),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    cart.decrementQuantity(
-                                        id, title, quantity, price);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(5),
-                                        bottomRight: Radius.circular(5),
-                                      ),
-                                      color: Colors.orange,
-                                    ),
-                                    child: Icon(Icons.add),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Chip(
-                              label: Text(
-                                "\$ " + (quantity * price).toString(),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(widget.quantity.toString()),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  cart.incrementQuantity(
+                                      widget.id, widget.title, widget.quantity, widget.price);
+
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(5),
+                                      bottomRight: Radius.circular(5),
+                                    ),
+                                    color: Colors.orange,
+                                  ),
+                                  child: Icon(Icons.add),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "\$ " + double.parse((widget.quantity * widget.price).toStringAsFixed(3)).toString(),
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("BUY NOW"),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: InkWell(onTap: (){},
+                //         child: Container(
+                //           decoration: BoxDecoration(
+                //             color: Colors.orange,
+                //             borderRadius: BorderRadius.circular(5),
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: Center(child: Text("BUY NOW")),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
