@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
 
 enum authMethod {
   Login,
@@ -15,8 +18,33 @@ class AuthenticationScreen extends StatefulWidget {
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _formState = GlobalKey<FormState>();
   var selectedAuthMethod = authMethod.Login;
-  bool isPass = true;
+  bool _isPass = true;
+  bool _isLoading=false;
+  Map<String,String> _authData={
+    'email':'',
+    'password':''
+  };
+  void userAuth() async{
+    _formState.currentState!.save();
+    setState(() {
+      _isLoading=true;
+    });
+    try{
+      if(selectedAuthMethod==authMethod.Login){
+        await Provider.of<Auth>(context,listen: false).login(_authData['email']!, _authData['password']!);
+      }
+      else {
+        await Provider.of<Auth>(context,listen: false).signUp(_authData['email']!, _authData['password']!);
+      }
+    }
+    catch(error){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+    }
 
+    setState(() {
+      _isLoading=false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -51,40 +79,50 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
+                    const Text(
                       "My Shop",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TextFormField(
+                      onSaved: (value){
+                        _authData['email']=value!;
+                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "*Required";
                         }
+                        if(!value.contains('@')){
+                          return "Invalid email";
+                        }
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: "Email",
                       ),
                     ),
                     TextFormField(
+                      onSaved: (value){
+                        _authData['password']=value!;
+                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "*Required";
                         }
                       },
-                      obscureText: isPass,
+                      obscureText: _isPass,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              isPass = !isPass;
+                              _isPass = !_isPass;
                             });
                           },
-                          icon: isPass
+                          icon: _isPass
                               ? Icon(Icons.remove_red_eye)
                               : Icon(Icons.remove_red_eye_outlined),
                         ),
                         hintText: "Password",
+
                       ),
                     ),
                     if (selectedAuthMethod == authMethod.Signup)
@@ -94,15 +132,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             return "*Required";
                           }
                         },
-                        obscureText: isPass,
+                        obscureText: _isPass,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                isPass = !isPass;
+                                _isPass = !_isPass;
                               });
                             },
-                            icon: isPass
+                            icon: _isPass
                                 ? Icon(Icons.remove_red_eye)
                                 : Icon(Icons.remove_red_eye_outlined),
                           ),
@@ -111,12 +149,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       ),
                     Column(
                       children: [
-                        AuthenticationButton(
+                        _isLoading?const CircularProgressIndicator():AuthenticationButton(
                           label: selectedAuthMethod == authMethod.Signup?"Signup":"Login",
                           onPressed: () {
                             if (!_formState.currentState!.validate());
                             else {
-                              print("object");
+                              userAuth();
                             }
                           },
                         ),
@@ -128,7 +166,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           onPressed: () {
                             setState(() {
                               selectedAuthMethod=selectedAuthMethod == authMethod.Signup?authMethod.Login:authMethod.Signup;
-
+                              _formState.currentState!.reset();
                             });
                           },
                         ),
